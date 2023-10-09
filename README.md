@@ -51,6 +51,7 @@ source devel/setup.bash
 ## Method 1: MoveIt! with Visualisation
 
 ![moveit_visualisation](./media/move_bot_demo-moveit.gif)
+*video available [here](./media/move_bot_demo-moveit.mp4)*
 
 For the visualisation in MoveIt!, a URDF file is required that defines the hybrid robot. The ```.xacro``` file can be accessed [here](./move_bot_description/urdf/move_bot.xacro).
 
@@ -89,3 +90,4 @@ The robot's execution is defined in [```move_bot.py```](./move_bot_visualisation
 ## Method 2: ROS Navigation Stack with Simulation
 
 ![move_base_visualisation](./media/move_bot_demo-move_base.gif)
+*video available [here](./media/move_bot_demo-move_base.mp4)*
