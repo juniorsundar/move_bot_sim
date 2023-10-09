@@ -2,8 +2,6 @@
 
     <include file="$(find move_bot_gazebo)/launch/move_bot_gazebo.launch"></include>
 
-    <include file="$(find move_bot_gazebo)/launch/ros_controllers.launch"></include>
-
     <node name="move_bot_control" pkg="move_bot_gazebo" type="move_bot_control.py" respawn="false" output="screen"/>
 
 </launch>

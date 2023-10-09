@@ -6,12 +6,23 @@ import copy
 import rospy
 from std_msgs.msg import Float64
 from geometry_msgs.msg import Twist
+import roslaunch
+import rospkg
+
 
 if __name__ == "__main__":
     try:
-        # Initialise moveit_commander and rosnode
         rospy.init_node('move_bot', anonymous=False)
         
+        rospy.sleep(10)
+        
+        rospack = rospkg.RosPack()
+        package_path = rospack.get_path('move_bot_gazebo')
+        uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+        roslaunch.configure_logging(uuid)
+        launch = roslaunch.parent.ROSLaunchParent(uuid, [package_path+"/launch/ros_controllers.launch"])
+        launch.start()
+
         arm_controls = [0]
         
         for i in range(1,8):
@@ -30,12 +41,12 @@ if __name__ == "__main__":
         end_effector_controls[0].publish(Float64(data = 0.75))
         end_effector_controls[1].publish(Float64(data = 0.75))
         
-        rospy.sleep(2)
+        rospy.sleep(5)
         
         move = Twist()
         move.linear.x = 1
         base_controls.publish(move)
-        rospy.sleep(1)
+        rospy.sleep(2)
         move.linear.x = 0
         base_controls.publish(move)
         

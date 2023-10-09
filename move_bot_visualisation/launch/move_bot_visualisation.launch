@@ -1,0 +1,7 @@
+<launch>
+
+    <include file="$(find move_bot_moveit_config)/launch/demo.launch"></include>
+
+    <node name="move_bot" pkg="move_bot_visualisation" type="move_bot.py" respawn="false" output="screen"/>
+
+</launch>
