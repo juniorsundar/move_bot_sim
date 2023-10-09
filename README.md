@@ -53,9 +53,9 @@ source devel/setup.bash
 ![moveit_visualisation](./media/move_bot_demo-moveit.gif)
 *video available [here](./media/move_bot_demo-moveit.mp4)*
 
-For the visualisation in MoveIt!, a URDF file is required that defines the hybrid robot. The ```.xacro``` file can be accessed [here](./move_bot_description/urdf/move_bot.xacro).
+For the visualisation in MoveIt!, a URDF file is required that defines the hybrid robot. The ```.xacro``` file can be accessed in [```move_bot.xacro```](./move_bot_description/urdf/move_bot.xacro).
 
-Note that an additional part was modelled to act as the base joining the PAL Omni Base and the Kinova Arm. It was designed using **Blender**, and can be accessed [here](./kinova_gen3_description/meshes/base_bot_platform.stl).
+Note that an additional part was modelled to act as the base joining the PAL Omni Base and the Kinova Arm. It was designed using **Blender**, and can be accessed in [```base_bot_platform.stl```](./kinova_gen3_description/meshes/base_bot_platform.stl).
 
 MoveIt! is not optimal to control moving base, since the motion plan is taken with respect to a fixed 'world' TF. However, in order to motion plan for this model through MoveIt! certain steps were taken.
 
@@ -85,9 +85,35 @@ To replicate the above visualisation, run the following bash command:
 roslaunch move_bot_visualisation move_bot_visualisation.launch
 ```
 
-The robot's execution is defined in [```move_bot.py```](./move_bot_visualisation/scripts/move_bot.py).
+The robot's execution is defined in [```move_bot.py```](./move_bot_visualisation/scripts/move_bot.py). The code is extensively documented to explain the exact steps taken to plan the motion and execute it.
 
 ## Method 2: ROS Navigation Stack with Simulation
 
 ![move_base_visualisation](./media/move_bot_demo-move_base.gif)
 *video available [here](./media/move_bot_demo-move_base.mp4)*
+
+An observation made earlier was that the base's control was being simplified into a 3DOF system. The control is on the static platform rather than the wheels. This method attempts to control the robot base using a differential drive controller and con
+
+In this process, we are sacrificing the motion planning capability gained from MoveIt! since there is no TF from the 'world' frame to the robotic arm's base. However, this problem can also be bypassed by treating the arm and the base as two separate systems, then implementing the ROS Navigation stack on the base and the MoveIt! framework on the arm.
+
+This method is purely implemented as a proof-of-concept, since I believe that controlling the base through the ROS Navigation stack is the right way to go about it. Using Method 1 is still a viable solution, though it limits the workable range of the moving base (as it has to be constrained in the URDF).
+
+This method's implementation is done in a separate sub-package: [```move_bot_gazebo```](./move_bot_gazebo/). Note that the visualisation is through simulation since the controllers are being loaded directly into **Gazebo**.
+
+### Hardware Interface and Controllers
+
+The base uses differential drive controllers for its wheels. This can be seen in a redefined [```omni_base.urdf.xacro```](./move_bot_gazebo/urdf/omni_base.urdf.xacro) in the ```move_bot_gazebo``` sub-package. Control commands are then sent to the ```/cmd_vel``` rostopic.
+
+The robotic arm and gripper are also defined with the ```PositionJointInterface``` hardware controllers. Control commands are then sent to their respective ```/joint{joint_number}_position_controller/command``` rostopic.
+
+The [```ros_controller.yaml```](./move_bot_gazebo/config/ros_controllers.yaml) file defines the exact ROS Controllers used to control the arm and gripper.
+
+### Execute Simulation
+
+To replicate the above simulation, run the following bash command:
+
+```bash
+roslaunch move_bot_gazebo move_bot_move_base.launch
+```
+
+This also launches the [```move_bot_control.py```](./move_bot_gazebo/scripts/move_bot_control.py) control script which loads the ROS Controllers and publishes control commands for the base, arm and gripper. The code is extensively documented and explains its functions clearly.
