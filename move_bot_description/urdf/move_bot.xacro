@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="move_bot">
+
+  <xacro:property name="base_name" value="omni_base" />
+  <xacro:property name="bot_name" value="kinova" />
+  <xacro:property name="gripper_name" value="robotiq" />
+
+  <link name="world"/>
+
+  <!-- Base -->
+  <xacro:include filename="$(find omni_base_description)/robots/omni_base.urdf.xacro" />
+  <xacro:robot_base base_name="${base_name}">
+  </xacro:robot_base>
+
+  <!-- Links and Joints for Base 3DOF Translation-->
+  <link name="x_base"/>
+
+  <joint name="translate_x" type="prismatic">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="world"/>
+    <child link="x_base"/>
+    <axis xyz="1.0 0.0 0.0"/>
+    <limit lower="-3.0" upper="3.0" effort="0.0" velocity="0.0"/>
+  </joint>
+  
+  <link name="y_base"/>
+
+  <joint name="translate_y" type="prismatic">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="x_base"/>
+    <child link="y_base"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <limit lower="-3.0" upper="3.0" effort="0.0" velocity="0.0"/>
+  </joint>
+
+  <link name="z_base"/>
+  
+  <joint name="rotate_z" type="revolute">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="y_base"/>
+    <child link="z_base"/>
+    <axis xyz="0.0 0.0 1.0"/>
+    <limit lower="-3.1415" upper="3.1415" effort="0.0" velocity="0.0"/>
+  </joint>
+
+  <joint name="affix" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="z_base"/>
+    <child link="${base_name}_footprint"/>
+  </joint>
+
+  <!-- Base to Kinova Mounting-->
+  <link name="base_bot_mount">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://kinova_gen3_description/meshes/base_bot_platform.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.1 0.1 0.1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://kinova_gen3_description/meshes/base_bot_platform.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="base_mount" type="fixed">
+    <origin xyz="0.0 0.0 0.225" rpy="0.0 0.0 0.0"/>
+    <parent link="${base_name}_link"/>
+    <child link="base_bot_mount"/>
+  </joint>
+
+  <joint name="mount_bot" type="fixed">
+    <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+    <parent link="base_bot_mount"/>
+    <child link="${bot_name}_base_link"/>
+  </joint>
+
+  <!-- Kinova Robot -->
+  <xacro:include filename="$(find kinova_gen3_description)/urdf/gen3_macro.xacro" />
+  <xacro:include filename="$(find kinova_gen3_description)/urdf/gen3_transmission_macro.xacro" />
+  <xacro:load_arm parent='${base_name}_dock_link' prefix='${bot_name}'>
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+  </xacro:load_arm>
+
+  <!-- Bot to Gripper Joint -->
+  <joint name="bot_gripper" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="${bot_name}_end_effector_link"/>
+    <child link="robotiq_arg2f_base_link"/>
+  </joint>
+
+  <!-- Robotiq Gripper -->
+  <xacro:include filename="$(find robotiq_2f_85_gripper_description)/urdf/robotiq_arg2f_85_model_macro.xacro" />
+  <xacro:robotiq_arg2f_85 prefix=""/>
+
+</robot>

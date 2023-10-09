@@ -1,0 +1,16 @@
+<launch>
+  <arg name="multi" default=""/>
+  <arg name="front_laser_model"  default="false"/>
+  <arg name="rear_laser_model"  default="false"/>
+  <arg name="name"  default="base"/>
+  <!-- <arg name="front_laser_model"  default="sick-571"/>
+  <arg name="rear_laser_model"  default="sick-571"/> -->
+
+  <!-- Robot description -->
+  <param name="robot_description"
+    command="$(find xacro)/xacro --inorder
+    '$(find omni_base_description)/robots/omni_base.urdf.xacro'
+    name:=$(arg name)" />
+
+ <!-- <rosparam command="load" file="$(find omni_base_description)/config/joint_limits.yaml" /> -->
+</launch>

@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+
+<!--
+Copyright (c) 2021, PAL Robotics, S.L.
+All rights reserved.
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported
+License.
+To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/3.0/ or send a
+letter to
+Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
+-->
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:property name="PI" value="3.1415926535897931" />
+  <material name="Blue">
+    <color rgba="0.0 0.0 0.8 1.0" />
+  </material>
+
+  <material name="Green">
+    <color rgba="0.0 0.8 0.0 1.0" />
+  </material>
+
+  <material name="Grey">
+    <color rgba="0.7 0.7 0.7 1.0" />
+  </material>
+
+  <material name="LightGrey">
+    <color rgba="0.9 0.9 0.9 1.0" />
+  </material>
+
+  <material name="DarkGrey">
+    <color rgba="0.1 0.1 0.1 1.0" />
+  </material>
+
+  <material name="Red">
+    <color rgba="0.8 0.0 0.0 1.0" />
+  </material>
+
+  <material name="White">
+    <color rgba="1.0 1.0 1.0 1.0" />
+  </material>
+
+  <material name="Yellow">
+    <color rgba="0.96 0.88 0.14 1.0" />
+  </material>
+
+  <!-- <xacro:include filename="$(find
+  move_bot_gazebo)/urdf/wheels/wheel.transmission.xacro"/> -->
+  <!-- <xacro:include filename="$(find move_bot_gazebo)/urdf/wheels/wheel.gazebo.xacro" /> -->
+
+  <!-- frontal_reflect: front: +1 and rear: -1 -->
+  <!-- sagital_reflect: right: +1 and left: -1 -->
+  <xacro:macro name="wheel"
+    params="side parent sagital_reflect frontal_reflect radius width torque velocity sagital_separation frontal_separation">
+
+    <link name="suspension_${side}_link">
+      <inertial>
+        <origin xyz="-0.058182 ${frontal_reflect * sagital_reflect * -0.0043908} -0.0057695"
+          rpy="0 0 0" />
+        <mass value="1.2879" />
+        <inertia ixx="0.0015947" ixy="${frontal_reflect * sagital_reflect * -0.00013183}"
+          ixz="1.7315E-05"
+          iyy="0.00060158" iyz="${frontal_reflect * sagital_reflect * -6.0731E-05}" izz="0.0015861" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <xacro:if value="${frontal_reflect == 1}">
+            <mesh filename="package://move_bot_gazebo/meshes/wheels/suspension_front_link.stl"
+              scale="1 ${sagital_reflect} 1" />
+          </xacro:if>
+          <xacro:unless value="${frontal_reflect == 1}">
+            <mesh filename="package://move_bot_gazebo/meshes/wheels/suspension_rear_link.stl"
+              scale="1 ${sagital_reflect} 1" />
+          </xacro:unless>
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <xacro:if value="${frontal_reflect == 1}">
+            <mesh filename="package://move_bot_gazebo/meshes/wheels/suspension_front_link.stl"
+              scale="1 ${sagital_reflect} 1" />
+          </xacro:if>
+          <xacro:unless value="${frontal_reflect == 1}">
+            <mesh filename="package://move_bot_gazebo/meshes/wheels/suspension_rear_link.stl"
+              scale="1 ${sagital_reflect} 1" />
+          </xacro:unless>
+        </geometry>
+      </collision>
+      <kinematic>0</kinematic>
+      <gravity>1</gravity>
+    </link>
+    <!-- Changed joint type to fixed joint. It is observed that the robot is loosing contact points
+    due to some issues with the Gazebo Physics Engine. This makes the robot drift in localization
+    when static due to added noise -->
+    <joint name="suspension_${side}_joint" type="fixed">
+      <origin
+        xyz="${frontal_reflect * frontal_separation / 2.0} ${sagital_reflect * -1.0 * suspension_sagital_separation / 2.0} 0"
+        rpy="0 0 ${sagital_reflect * -90.0 * deg_to_rad}" />
+      <parent link="${parent}" />
+      <child link="suspension_${side}_link" />
+      <axis xyz="0 0 1" />
+    </joint>
+
+    <link name="wheel_${side}_link">
+      <inertial>
+        <origin
+          xyz="${frontal_reflect * 5.4922E-09} ${frontal_reflect * sagital_reflect * 6.9775E-05} ${sagital_reflect * 0.011144}"
+          rpy="0 0 0" />
+        <mass value="0.70767" />
+        <inertia ixx="0.00035492" ixy="${frontal_reflect * 7.5685E-13}" ixz="3.8795E-11"
+          iyy="0.00035529" iyz="${frontal_reflect * -2.0284E-07}" izz="0.00040131" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://move_bot_gazebo/meshes/wheels/wheel_link.stl"
+            scale="1 1 ${sagital_reflect}" />
+        </geometry>
+        <material name="DarkGrey" />
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="${radius}" length="${width}" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="wheel_${side}_joint" type="continuous">
+      <origin xyz="0.050675 0 0"
+        rpy="${-90.0 * deg_to_rad} 0 ${sagital_reflect * 90.0 * deg_to_rad}" />
+      <parent link="suspension_${side}_link" />
+      <child link="wheel_${side}_link" />
+      <axis xyz="0 0 1" />
+      <limit effort="${torque}" velocity="${velocity / radius}" />
+    </joint>
+
+    <!-- Transmission -->
+    <!-- <xacro:wheel_transmission side="${side}"/> -->
+
+    <!-- Gazebo extensions -->
+    <!-- <xacro:wheel_gazebo side="${side}"/> -->
+
+  </xacro:macro>
+
+</robot>

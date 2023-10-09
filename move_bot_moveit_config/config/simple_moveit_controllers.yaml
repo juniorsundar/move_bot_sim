@@ -1,0 +1,25 @@
+controller_list:
+  - name: base_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - translate_x
+  - name: arm_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - kinova_joint_1
+      - kinova_joint_2
+      - kinova_joint_3
+      - kinova_joint_4
+      - kinova_joint_5
+      - kinova_joint_6
+      - kinova_joint_7
+  - name: gripper_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - finger_joint

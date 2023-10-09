@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: move_bot_description
+    relative_path: urdf/move_bot.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/move_bot.srdf
+  CONFIG:
+    author_name: Junior Sundar
+    author_email: juniorsundar@gmail.com
+    generated_timestamp: 1696676792

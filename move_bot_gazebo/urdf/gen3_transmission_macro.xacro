@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:macro name="load_gazebo_arm_transmissions" params="prefix">
+
+        <gazebo>
+            <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+            <!-- <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType> -->
+            </plugin>
+        </gazebo>
+
+        <transmission name="${prefix}_joint_1_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${prefix}_joint_1">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${prefix}_joint_1_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+            <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
+        </actuator>
+        </transmission>
+
+        <transmission name="${prefix}_joint_2_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${prefix}_joint_2">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${prefix}_joint_2_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+            <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
+        </actuator>
+        </transmission>
+
+        <transmission name="${prefix}_joint_3_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${prefix}_joint_3">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${prefix}_joint_3_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+            <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
+        </actuator>
+        </transmission>
+
+        <transmission name="${prefix}_joint_4_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${prefix}_joint_4">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${prefix}_joint_4_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+            <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
+        </actuator>
+        </transmission>
+
+        <transmission name="${prefix}_joint_5_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${prefix}_joint_5">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${prefix}_joint_5_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+            <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
+        </actuator>
+        </transmission>
+
+        <transmission name="${prefix}_joint_6_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${prefix}_joint_6">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${prefix}_joint_6_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+            <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
+        </actuator>
+        </transmission>
+
+        <transmission name="${prefix}_joint_7_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${prefix}_joint_7">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${prefix}_joint_7_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+            <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
+        </actuator>
+        </transmission>
+
+    </xacro:macro>
+
+</robot>
