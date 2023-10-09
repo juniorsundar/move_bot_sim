@@ -1,8 +1,8 @@
-# Move Bot Visualisation
+# Move Bot Sim
 
 This is a ROS package for visualising the motion-planning and movement of a hybrid robot consisting of a PAL Omni Base, a Kinova Gen3 robotic arm, and a Robotiq 85 gripper.
 
-In this repository, we look at two possible ways to control the robot. The first strategy goes the MoveIt! path. The second strategy goes the path of the ROS Navigation. Both have their advantages and disadvantages which will be discussed in the respective section.
+In this repository, we look at two possible ways to control the robot. The first strategy goes the MoveIt! path. The second strategy goes the path of the ROS Navigation Stack. Both have their advantages and disadvantages which will be discussed in the respective section.
 
 ## Prerequisite
 
@@ -57,7 +57,7 @@ For the visualisation in MoveIt!, a URDF file is required that defines the hybri
 
 Note that an additional part was modelled to act as the base joining the PAL Omni Base and the Kinova Arm. It was designed using **Blender**, and can be accessed in [```base_bot_platform.stl```](./kinova_gen3_description/meshes/base_bot_platform.stl).
 
-MoveIt! is not optimal to control moving base, since the motion plan is taken with respect to a fixed 'world' TF. However, in order to motion plan for this model through MoveIt! certain steps were taken.
+MoveIt! is not optimal to control moving base, since the motion plan is only possible if there is a TF between a fixed `world` TF and the robot's base. Yet as the base moves, there isn't a reliable TF between the `base_footprint` frame of the Omni Base and `world`. However, in order to motion plan for this model through MoveIt! certain steps were taken.
 
 Since the moving base can be defined as a 3DOF system, in the URDF file, three additional dummy links ```x_base```, ```y_base```, and ```z_base```. The dummy 'world' frame is joined to ```x_base``` with a prismatic joint for translation in the x-axis. ```x_base``` is joined to ```y_base``` with a prismatic joint for translation in the y-axis. ```y_base``` is joined to the ```z_base``` with a revolute joint for rotation in the z-axis. This effective defines all the possible movements the base can make. Note, however, that this means the control is being performed on the base as a whole and not through the wheels, i.e. the base is moving as a static object while the wheels aren't rotating.
 
@@ -92,9 +92,9 @@ The robot's execution is defined in [```move_bot.py```](./move_bot_visualisation
 ![move_base_visualisation](./media/move_bot_demo-move_base.gif)
 *video available [here](./media/move_bot_demo-move_base.mp4)*
 
-An observation made earlier was that the base's control was being simplified into a 3DOF system. The control is on the static platform rather than the wheels. This method attempts to control the robot base using a differential drive controller and con
+An observation made earlier was that the base's control was being simplified into a 3DOF system. The control is on the static platform rather than the wheels. This method attempts to control the robot base using a differential drive controller for the left and right wheel.
 
-In this process, we are sacrificing the motion planning capability gained from MoveIt! since there is no TF from the 'world' frame to the robotic arm's base. However, this problem can also be bypassed by treating the arm and the base as two separate systems, then implementing the ROS Navigation stack on the base and the MoveIt! framework on the arm.
+In this process, we are sacrificing the motion planning capability gained from MoveIt! since there is no TF from the `world` frame to the robotic arm's base. However, this problem can also be bypassed by treating the arm and the base as two separate systems, then implementing the ROS Navigation stack on the base and the MoveIt! framework on the arm.
 
 This method is purely implemented as a proof-of-concept, since I believe that controlling the base through the ROS Navigation stack is the right way to go about it. Using Method 1 is still a viable solution, though it limits the workable range of the moving base (as it has to be constrained in the URDF).
 
