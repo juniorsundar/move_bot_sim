@@ -73,7 +73,7 @@ Since the moving base can be defined as a 3DOF system, in the URDF file, three a
 
 - **base** - We are using *RRTConnect* since the dimensionality of this system is low, and speed and efficiency of plan is important.
 - **arm** - We are using *PRMstar* since this has a higher dimensionality. Furthermore, it also considers the optimality of the path, pruning out poor paths if there is a lower cost alternative.
-- **end_effector** - No planner required since.
+- **end_effector** - No planner is required since it is just a single joint.
 
 *refer [here](./move_bot_moveit_config/config/ompl_planning.yaml)*
 
